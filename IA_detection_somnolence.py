@@ -6,7 +6,6 @@ from torchvision import models, transforms
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
 from PIL import Image
-import numpy as np
 
 # Définition d'une classe pour le modèle de classification de sommeil
 class SleepClassifier(nn.Module):
@@ -46,7 +45,8 @@ class SleepDataset(Dataset):
 
 
 # Chemin vers le répertoire contenant vos images
-data_dir = "/chemin/vers/votre/repertoire"
+data_dir = os.path.dirname(os.path.abspath(__file__)) + "/dataset"
+
 data_paths = []  # Liste des chemins vers les images
 targets = []     # Liste des étiquettes (0 pour éveil, 1 pour sommeil)
 
