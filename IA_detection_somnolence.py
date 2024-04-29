@@ -61,6 +61,8 @@ for root, dirs, files in os.walk(data_dir):
                 targets.append(0)  # Sinon, l'étiquette est 0 (éveil)
 
 
+
+
 # Division des données en ensembles d'entraînement, de validation et de test
 train_paths, test_paths, train_targets, test_targets = train_test_split(data_paths, targets, test_size=0.2, random_state=42)
 train_paths, val_paths, train_targets, val_targets = train_test_split(train_paths, train_targets, test_size=0.1, random_state=42)
