@@ -10,6 +10,11 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 
+#changer le working directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
+
+
 # Chemin vers le dossier contenant les données extraites
 base_folder = 'Expression Recognition.v2i.coco'
 
@@ -130,6 +135,26 @@ plt.show()
 
 
 #%%
+import os
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+
+# Chemin vers le dossier contenant les données extraites
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
+
+# Paramètres
+img_width, img_height = 400, 400
+batch_size = 32
+epochs = 10
+num_classes = 3
 
 # Fonction pour prédire une nouvelle image
 def predict_image(file_path, model_path='expression_recognition_model.keras'):
@@ -159,10 +184,10 @@ predictions = {file: predict_image(file) for file in image_files}
 num_images = len(image_files)
 num_rows = (num_images + 3) // 4  # Nombre de lignes nécessaires pour 4 images par ligne
 
-# Prédiction pour chaque image et affichage
+# Affichage des images et des prédictions
 fig = plt.figure(figsize=(15, 3 * num_rows))  # Largeur fixe, hauteur ajustée en fonction du nombre de lignes
 for i, file in enumerate(image_files, 1):
-    category = predict_image(file)
+    category = predictions[file]
     img = load_img(file, target_size=(img_width, img_height))
     
     ax = fig.add_subplot(num_rows, 4, i)  # Configuration pour 4 images par ligne
