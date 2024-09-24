@@ -70,7 +70,6 @@ def predict():
               
         temp_filename = 'temp_image.jpg'
         img.save(temp_filename, format='JPEG')
-        
         try:
             # Chargement et préparation de l'image
             face_img = extract_and_resize_face(temp_filename, output_size=(img_width, img_height))
@@ -95,5 +94,5 @@ def predict():
                 os.remove(temp_filename)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=3000)
     

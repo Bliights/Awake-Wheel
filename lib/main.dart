@@ -56,9 +56,7 @@ class MyHomePage extends StatelessWidget {
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)
-                    )
-                ),
+                        borderRadius: BorderRadius.circular(30))),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -94,15 +92,15 @@ class _CameraPageState extends State<CameraPage> {
     super.initState();
     _initializeControllerFuture = _initCamera();
     sendImageToServer();
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) => sendImageToServer());
+    _timer = Timer.periodic(
+        const Duration(seconds: 5), (timer) => sendImageToServer());
   }
 
   Future<void> _initCamera() async {
     final cameras = await availableCameras();
     final frontCamera = cameras.firstWhere(
-            (camera) => camera.lensDirection == CameraLensDirection.front,
-        orElse: () => cameras.first
-    );
+        (camera) => camera.lensDirection == CameraLensDirection.front,
+        orElse: () => cameras.first);
     _controller = CameraController(
       frontCamera,
       ResolutionPreset.max,
@@ -117,26 +115,22 @@ class _CameraPageState extends State<CameraPage> {
     }
 
     try {
-
       final image = await _controller.takePicture();
-      var uri = Uri.parse('http://10.1.160.175:5000/predict'); // Change to your server URL
+      var uri = Uri.parse(
+          'http://10.0.2.2:3000/predict'); // Change to your server URL
 
       // Create a multipart request
       var request = http.MultipartRequest('POST', uri);
 
       // Attach the file
-      request.files.add(
-          http.MultipartFile(
-              'file',
-              File(image.path).readAsBytes().asStream(),
-              File(image.path).lengthSync(),
-              filename: image.path.split("/").last
-          )
-      );
+      request.files.add(http.MultipartFile(
+          'file',
+          File(image.path).readAsBytes().asStream(),
+          File(image.path).lengthSync(),
+          filename: image.path.split("/").last));
 
       // Send the request
       var response = await request.send();
-
 
       if (response.statusCode == 200) {
         print('Image uploaded and prediction received.');
@@ -144,12 +138,12 @@ class _CameraPageState extends State<CameraPage> {
         final predictionResult = jsonDecode(res.body);
         print('Prediction: ${predictionResult['predicted_category']}');
         setState(() {
-          if (predictionResult['predicted_category'] == 1 || predictionResult['predicted_category'] == 2) {
+          if (predictionResult['predicted_category'] == 1 ||
+              predictionResult['predicted_category'] == 2) {
             _showRedBorder = true;
             startAlertTimer();
           }
         });
-
       } else {
         print('Failed to predict image: ${response.statusCode}');
       }
@@ -186,7 +180,7 @@ class _CameraPageState extends State<CameraPage> {
   void dispose() {
     _controller.dispose();
     _timer?.cancel();
-    _alertTimer?.cancel();  // S'assurer de nettoyer le timer d'alerte
+    _alertTimer?.cancel(); // S'assurer de nettoyer le timer d'alerte
     super.dispose();
   }
 
@@ -196,12 +190,14 @@ class _CameraPageState extends State<CameraPage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Container(color: Colors.black), // Black background for the camera page
+          Container(
+              color: Colors.black), // Black background for the camera page
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(10.0, 40.0, 10.0, 10.0),
-              child: Image.asset('assets/awake wheel page principale.png', width: 100),
+              child: Image.asset('assets/awake wheel page principale.png',
+                  width: 100),
             ),
           ),
           Align(
@@ -214,9 +210,7 @@ class _CameraPageState extends State<CameraPage> {
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)
-                    )
-                ),
+                        borderRadius: BorderRadius.circular(30))),
                 onPressed: () {
                   Navigator.pop(context);
                   _showRedBorder = false;
@@ -234,11 +228,14 @@ class _CameraPageState extends State<CameraPage> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasError) {
-                    return Text('Erreur lors du chargement de la caméra: ${snapshot.error}');
+                    return Text(
+                        'Erreur lors du chargement de la caméra: ${snapshot.error}');
                   }
                   return Container(
                     decoration: BoxDecoration(
-                      border: _showRedBorder ? Border.all(color: Colors.red, width: 5) : null,
+                      border: _showRedBorder
+                          ? Border.all(color: Colors.red, width: 5)
+                          : null,
                     ),
                     child: CameraPreview(_controller),
                   );
@@ -248,7 +245,7 @@ class _CameraPageState extends State<CameraPage> {
               },
             ),
           ),
-          if (_showRedBorder)  // Afficher le bouton "Stop" si _showRedBorder est vrai
+          if (_showRedBorder) // Afficher le bouton "Stop" si _showRedBorder est vrai
             Center(
               child: ElevatedButton(
                 onPressed: () {
@@ -260,8 +257,7 @@ class _CameraPageState extends State<CameraPage> {
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
-                    textStyle: const TextStyle(fontSize: 24)
-                ),
+                    textStyle: const TextStyle(fontSize: 24)),
                 child: const Text('STOP', style: TextStyle(fontSize: 24)),
               ),
             ),
